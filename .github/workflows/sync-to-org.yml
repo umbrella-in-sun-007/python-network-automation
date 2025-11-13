@@ -1,0 +1,44 @@
+name: Sync main branch to organization repo
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync:
+    if: ${{ !contains(github.event.head_commit.message, '[skip-sync]') }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Clear default GitHub Actions credentials
+        run: |
+          git config --system --unset-all http.https://github.com/.extraheader || true
+          git config --global --unset-all http.https://github.com/.extraheader || true
+          git config --local --unset-all http.https://github.com/.extraheader || true
+          git config --unset credential.helper || true
+          rm -f ~/.git-credentials || true
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "neerajadhav"
+          git config --global user.email "adhavneeraj9500@gmail.com"
+
+      - name: Mark commit to skip downstream workflows
+        run: |
+          git commit --allow-empty -m "[skip-sync] automated sync from personal repo" || true
+
+      - name: Add organization repository as remote
+        run: |
+          git remote remove target || true
+          git remote add target https://x-access-token:${{ secrets.SYNC_TOKEN }}@github.com/umbrella-in-sun-007/python-network-automation.git
+
+      - name: Push main branch to organization repository
+        run: |
+          set -e
+          git push target main --force
