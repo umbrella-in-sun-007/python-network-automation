@@ -1,0 +1,67 @@
+project_name: python-network-automation-demo
+
+############################################################
+# LocalStack Configuration
+############################################################
+localstack:
+  endpoint_url: http://localhost:4566
+  region: us-east-1
+
+  vpc:
+    cidr_block: 10.0.0.0/16
+    name: local-vpc-demo
+
+  subnets:
+    - cidr: 10.0.1.0/24
+      az: us-east-1a
+      name: local-subnet-a
+
+    - cidr: 10.0.2.0/24
+      az: us-east-1b
+      name: local-subnet-b
+
+  routes:
+    - destination_cidr_block: 0.0.0.0/0
+      gateway_id: local-gw
+
+############################################################
+# GCP Configuration
+############################################################
+gcp:
+  project_id: YOUR_GCP_PROJECT_ID   # Replace with your real project ID
+  region: us-central1
+
+  network:
+    name: gcp-network-demo
+    auto_create_subnetworks: false
+
+  subnets:
+    - name: gcp-subnet-a
+      ip_cidr_range: 10.1.1.0/24
+      region: us-central1
+
+    - name: gcp-subnet-b
+      ip_cidr_range: 10.1.2.0/24
+      region: us-central1
+
+  routes:
+    - name: gcp-default-route
+      destRange: "0.0.0.0/0"
+      nextHopInternet: true
+
+############################################################
+# Validation (SSH)
+############################################################
+validation:
+  ssh:
+    user: ubuntu
+    key_path: ~/.ssh/id_rsa
+
+    # Add hosts you want to validate routing on
+    hosts:
+      - 127.0.0.1   # Example (replace with real VM IPs)
+
+    # Commands to run remotely
+    commands:
+      - "ip route"
+      - "ip -4 addr"
