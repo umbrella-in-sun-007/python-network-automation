@@ -1,5 +1,7 @@
 # Python Network Automation – LocalStack + GCP
 
+![Localstack](localstack.png)
+
 This project is a **Python-based network provisioning and validation framework** that automates the creation of **VPCs, subnets, and routing tables** across **LocalStack (AWS-like)** and **Google Cloud Platform (GCP)**.
 It ensures **cross-cloud consistency**, **real-time validation**, and **infrastructure state synchronization** using:
 
